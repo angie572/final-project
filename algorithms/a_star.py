@@ -68,3 +68,4 @@ def a_star(draw, grid, start, end):
     print(f"Time taken: {end_time - start_time:.2f} seconds")
     print(f"Nodes traversed: {nodes_traversed}")
     return False
+
