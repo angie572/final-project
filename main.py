@@ -1,6 +1,7 @@
 import pygame
 from algorithms.a_star import a_star
 from algorithms.dijkstra import dijkstra
+from algorithms.bfs import bfs
 
 class Grid:
     def __init__(self, rows, width):
@@ -161,6 +162,9 @@ def main(win, width, rows):
 
                 if event.key == pygame.K_d:
                     algorithm = dijkstra
+
+                if event.key == pygame.K_b:
+                    algorithm = bfs
 
                 if event.key == pygame.K_SPACE and start and end and not started and algorithm:
                     started = True
