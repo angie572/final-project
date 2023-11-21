@@ -36,10 +36,17 @@ class Grid:
         col = x // self.gap
         return row, col
 
-    def reset(self):
+    def reset(self, clear_barriers=False):
         for row in self.grid:
             for spot in row:
-                spot.reset()
+                if clear_barriers or not spot.is_barrier():
+                    spot.reset()
+
+    def clear_path(self):
+        for row in self.grid:
+            for spot in row:
+                if spot.is_closed() or spot.is_open() or spot.is_path():
+                    spot.reset()
 
     def update_neighbors(self):
         for row in self.grid:
@@ -75,6 +82,9 @@ class Spot:
 
     def is_end(self):
         return self.color == (128, 0, 128)  # Purple for end spot
+    
+    def is_path(self):
+        return self.color == (64, 224, 208)  # Turquoise for path
 
     def reset(self):
         self.color = (255, 255, 255)  # Reset to white
@@ -173,13 +183,20 @@ def main(win, width, rows):
                             spot.update_neighbors(grid.grid)
 
                     algorithm(lambda: draw(win, grid), grid.grid, start, end)
+                    started = False
 
                 if event.key == pygame.K_c:
+                    if pygame.key.get_mods() & pygame.KMOD_SHIFT:
+                        # Shift + C to completely reset grid
+                        grid.reset(clear_barriers=True)
+                    else:
+                        # C to clear only the path
+                        grid.clear_path()
+
                     start = None
                     end = None
                     started = False
                     algorithm = None
-                    grid.reset()
 
     pygame.quit()
 
