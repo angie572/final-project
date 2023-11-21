@@ -1,13 +1,18 @@
 import pygame
 from queue import Queue
+import time
 
 def bfs(draw, grid, start, end):
+    start_time = time.time()  # Start timer
     q = Queue()
     q.put(start)
     came_from = {}
-    visited = set([start])
+    visited = {start}
+
+    nodes_traversed = 0
 
     while not q.empty():
+        nodes_traversed += 1  # Increment nodes traversed
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -17,6 +22,9 @@ def bfs(draw, grid, start, end):
         if current == end:
             reconstruct_path(came_from, end, draw)
             end.make_end()
+            end_time = time.time()  # End timer
+            print(f"Time taken: {end_time - start_time:.2f} seconds")
+            print(f"Nodes traversed: {nodes_traversed}")
             return True
 
         for neighbor in current.neighbors:
@@ -31,7 +39,11 @@ def bfs(draw, grid, start, end):
         if current != start:
             current.make_closed()
 
+    end_time = time.time()  # End timer
+    print(f"Time taken: {end_time - start_time:.2f} seconds")
+    print(f"Nodes traversed: {nodes_traversed}")
     return False
+
 
 def reconstruct_path(came_from, current, draw):
     while current in came_from:
