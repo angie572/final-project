@@ -1,5 +1,5 @@
 import pygame
-import math
+import time
 from queue import PriorityQueue
 
 def h(p1, p2):
@@ -14,6 +14,9 @@ def reconstruct_path(came_from, current, draw):
         draw()
 
 def a_star(draw, grid, start, end):
+    start_time = time.time()
+    nodes_traversed = 0
+
     count = 0
     open_set = PriorityQueue()
     open_set.put((0, count, start))
@@ -26,6 +29,8 @@ def a_star(draw, grid, start, end):
     open_set_hash = {start}
 
     while not open_set.empty():
+        nodes_traversed += 1
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -36,6 +41,9 @@ def a_star(draw, grid, start, end):
         if current == end:
             reconstruct_path(came_from, end, draw)
             end.make_end()
+            end_time = time.time()
+            print(f"Time taken: {end_time - start_time:.2f} seconds")
+            print(f"Nodes traversed: {nodes_traversed}")
             return True
 
         for neighbor in current.neighbors:
@@ -56,67 +64,7 @@ def a_star(draw, grid, start, end):
         if current != start:
             current.make_closed()
 
+    end_time = time.time()
+    print(f"Time taken: {end_time - start_time:.2f} seconds")
+    print(f"Nodes traversed: {nodes_traversed}")
     return False
-
-class Grid:
-    def __init__(self, rows, width):
-        self.rows = rows
-        self.width = width
-        self.grid = []
-        self.gap = width // rows
-        self.make_grid()
-
-    def make_grid(self):
-        self.grid = []
-        for i in range(self.rows):
-            self.grid.append([])
-            for j in range(self.rows):
-                spot = Spot(i, j, self.gap, self.rows)
-                self.grid[i].append(spot)
-
-    def draw(self, win):
-        win.fill((255, 255, 255))  # Fill window with white
-        for row in self.grid:
-            for spot in row:
-                spot.draw(win)
-
-        for i in range(self.rows):
-            pygame.draw.line(win, (128, 128, 128), (0, i * self.gap), (self.width, i * self.gap))
-            for j in range(self.rows):
-                pygame.draw.line(win, (128, 128, 128), (j * self.gap, 0), (j * self.gap, self.width))
-
-    def get_clicked_pos(self, pos):
-        y, x = pos
-        row = y // self.gap
-        col = x // self.gap
-        return row, col
-
-    def reset(self):
-        for row in self.grid:
-            for spot in row:
-                spot.reset()
-
-    def update_neighbors(self):
-        for row in self.grid:
-            for spot in row:
-                spot.update_neighbors(self.grid)
-
-class Spot:
-    def __init__(self, row, col, width, total_rows):
-        self.row = row
-        self.col = col
-        self.x = row * width
-        self.y = col * width
-        self.color = (255, 255, 255)  # White for empty spot
-        self.neighbors = []
-        self.width = width
-        self.total_rows = total_rows
-
-    def get_pos(self):
-        return self.row, self.col
-
-    def is_closed(self):
-        return self.color == (255, 0, 0)  # Red for closed spot
-
-    def is_open(self):
-        return self.color == (0, 255, 0) 
