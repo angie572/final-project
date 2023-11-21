@@ -1,5 +1,5 @@
 import pygame
-import math
+import time
 from queue import PriorityQueue
 
 def reconstruct_path(came_from, current, draw):
@@ -9,6 +9,7 @@ def reconstruct_path(came_from, current, draw):
         draw()
 
 def dijkstra(draw, grid, start, end):
+    start_time = time.time()  # Start the timer
     count = 0
     open_set = PriorityQueue()
     open_set.put((0, count, start))
@@ -18,6 +19,8 @@ def dijkstra(draw, grid, start, end):
 
     open_set_hash = {start}
 
+    nodes_traversed = 0  # Initialize node counter
+
     while not open_set.empty():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -25,10 +28,14 @@ def dijkstra(draw, grid, start, end):
 
         current = open_set.get()[2]
         open_set_hash.remove(current)
+        nodes_traversed += 1  # Increment node counter
 
         if current == end:
             reconstruct_path(came_from, end, draw)
             end.make_end()
+            end_time = time.time()  # Stop the timer
+            print(f"Time taken: {end_time - start_time:.2f} seconds")
+            print(f"Nodes traversed: {nodes_traversed}")
             return True
 
         for neighbor in current.neighbors:
@@ -48,6 +55,9 @@ def dijkstra(draw, grid, start, end):
         if current != start:
             current.make_closed()
 
+    end_time = time.time()  # Stop the timer if no path is found
+    print(f"Time taken: {end_time - start_time:.2f} seconds")
+    print(f"Nodes traversed: {nodes_traversed}")
     return False
 
 class Spot:
