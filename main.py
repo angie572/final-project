@@ -130,7 +130,7 @@ def main(win, width, rows):
     end = None
     run = True
     started = False
-    algorithm = None  # To store the chosen algorithm
+    algorithm = None
 
     while run:
         draw(win, grid)
@@ -148,11 +148,9 @@ def main(win, width, rows):
                 if not start and spot != end:
                     start = spot
                     start.make_start()
-
                 elif not end and spot != start:
                     end = spot
                     end.make_end()
-
                 elif spot != end and spot != start:
                     spot.make_barrier()
 
@@ -169,30 +167,22 @@ def main(win, width, rows):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
                     algorithm = a_star
-
-                if event.key == pygame.K_d:
+                elif event.key == pygame.K_d:
                     algorithm = dijkstra
-
-                if event.key == pygame.K_b:
+                elif event.key == pygame.K_b:
                     algorithm = bfs
-
-                if event.key == pygame.K_SPACE and start and end and not started and algorithm:
+                elif event.key == pygame.K_SPACE and start and end and not started and algorithm:
                     started = True
                     for row in grid.grid:
                         for spot in row:
                             spot.update_neighbors(grid.grid)
-
                     algorithm(lambda: draw(win, grid), grid.grid, start, end)
                     started = False
-
-                if event.key == pygame.K_c:
+                elif event.key == pygame.K_c:
                     if pygame.key.get_mods() & pygame.KMOD_SHIFT:
-                        # Shift + C to completely reset grid
                         grid.reset(clear_barriers=True)
                     else:
-                        # C to clear only the path
                         grid.clear_path()
-
                     start = None
                     end = None
                     started = False
