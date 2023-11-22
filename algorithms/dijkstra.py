@@ -28,7 +28,7 @@ def dijkstra(draw, grid, start, end):
 
         current = open_set.get()[2]
         open_set_hash.remove(current)
-        nodes_traversed += 1  # Increment node counter
+        nodes_traversed += 1
 
         if current == end:
             reconstruct_path(came_from, end, draw)
@@ -36,7 +36,7 @@ def dijkstra(draw, grid, start, end):
             end_time = time.time()  # Stop the timer
             print(f"Time taken: {end_time - start_time:.2f} seconds")
             print(f"Nodes traversed: {nodes_traversed}")
-            return True
+            return (end_time - start_time, nodes_traversed)
 
         for neighbor in current.neighbors:
             temp_g_score = g_score[current] + 1
@@ -55,10 +55,11 @@ def dijkstra(draw, grid, start, end):
         if current != start:
             current.make_closed()
 
-    end_time = time.time()  # Stop the timer if no path is found
+    #When there's no path
     print(f"Time taken: {end_time - start_time:.2f} seconds")
     print(f"Nodes traversed: {nodes_traversed}")
-    return False
+    print("There's no path :()")
+    return (None, None)
 
 class Spot:
     def __init__(self, row, col, width, total_rows):
@@ -169,3 +170,4 @@ class Grid:
         for row in self.grid:
             for spot in row:
                 spot.update_neighbors(self.grid)
+
