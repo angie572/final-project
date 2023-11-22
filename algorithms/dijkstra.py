@@ -59,7 +59,7 @@ def dijkstra(draw, grid, start, end):
     end_time = time.time()
     print(f"Time taken: {end_time - start_time:.2f} seconds")
     print(f"Nodes traversed: {nodes_traversed}")
-    print("There's no path :()")
+    print("There's no path:(")
     return (None, None)
 
 class Spot:
