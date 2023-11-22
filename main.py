@@ -2,6 +2,7 @@ import pygame
 from algorithms.a_star import a_star
 from algorithms.dijkstra import dijkstra
 from algorithms.bfs import bfs
+pygame.init()
 
 class Grid:
     def __init__(self, rows, width):
@@ -124,6 +125,10 @@ class Spot:
         if self.col > 0 and not grid[self.row][self.col - 1].is_barrier():  # LEFT
             self.neighbors.append(grid[self.row][self.col - 1])
 
+def draw_text(win, text, position, font, color=(0, 0, 0)):
+    text_surface = font.render(text, True, color)
+    win.blit(text_surface, position)
+
 def main(win, width, rows):
     grid = Grid(rows, width)
     start = None
@@ -131,6 +136,7 @@ def main(win, width, rows):
     run = True
     started = False
     algorithm = None
+    algorithm_result = None
 
     while run:
         draw(win, grid)
@@ -176,8 +182,12 @@ def main(win, width, rows):
                     for row in grid.grid:
                         for spot in row:
                             spot.update_neighbors(grid.grid)
-                    algorithm(lambda: draw(win, grid), grid.grid, start, end)
+
+                    # Store the results from the algorithm
+                    algorithm_result = algorithm(lambda: draw(win, grid), grid.grid, start, end)
                     started = False
+                    # Display the results
+                    draw_results(win, algorithm_result)
                 elif event.key == pygame.K_c:
                     if pygame.key.get_mods() & pygame.KMOD_SHIFT:
                         grid.reset(clear_barriers=True)
@@ -189,6 +199,16 @@ def main(win, width, rows):
                     algorithm = None
 
     pygame.quit()
+
+def draw_results(win, results):
+    if results:
+        time_taken, nodes_visited = results
+        if time_taken is not None and nodes_visited is not None:
+            font = pygame.font.SysFont(None, 24)
+            draw_text(win, f"Time taken: {time_taken:.2f} seconds", (10, WIDTH + 10), font)
+            draw_text(win, f"Nodes visited: {nodes_visited}", (10, WIDTH + 35), font)
+        pygame.display.update()
+
 
 def draw(win, grid):
     win.fill((255, 255, 255))
