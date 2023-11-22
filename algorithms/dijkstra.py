@@ -56,6 +56,7 @@ def dijkstra(draw, grid, start, end):
             current.make_closed()
 
     #When there's no path
+    end_time = time.time()
     print(f"Time taken: {end_time - start_time:.2f} seconds")
     print(f"Nodes traversed: {nodes_traversed}")
     print("There's no path :()")
