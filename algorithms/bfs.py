@@ -25,7 +25,7 @@ def bfs(draw, grid, start, end):
             end_time = time.time()  # End timer
             print(f"Time taken: {end_time - start_time:.2f} seconds")
             print(f"Nodes traversed: {nodes_traversed}")
-            return True
+            return (end_time - start_time, nodes_traversed)
 
         for neighbor in current.neighbors:
             if neighbor not in visited:
@@ -40,9 +40,11 @@ def bfs(draw, grid, start, end):
             current.make_closed()
 
     end_time = time.time()  # End timer
+    #When there's no path
     print(f"Time taken: {end_time - start_time:.2f} seconds")
     print(f"Nodes traversed: {nodes_traversed}")
-    return False
+    print("There's no path :()")
+    return (None, None)
 
 
 def reconstruct_path(came_from, current, draw):
