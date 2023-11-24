@@ -6,7 +6,7 @@ class Spot:
         self.col = col
         self.x = row * width
         self.y = col * width
-        self.color = (255, 255, 255)  # White for empty spot
+        self.color = (255, 255, 255)  
         self.neighbors = []
         self.width = width
         self.total_rows = total_rows
@@ -15,54 +15,40 @@ class Spot:
         return self.row, self.col
 
     def is_closed(self):
-        return self.color == (255, 0, 0)  # Red for closed spot
+        return self.color == (205, 92, 92)  # Indian Red
 
     def is_open(self):
-        return self.color == (0, 255, 0)  # Green for open spot
+        return self.color == (60, 179, 113)  # Medium Sea Green
 
     def is_barrier(self):
-        return self.color == (0, 0, 0)  # Black for barrier
+        return self.color == (47, 79, 79)  # Dark Slate Gray
 
     def is_start(self):
-        return self.color == (255, 165, 0)  # Orange for start spot
+        return self.color == (255, 215, 0)  # Gold
 
     def is_end(self):
-        return self.color == (128, 0, 128)  # Purple for end spot
+        return self.color == (100, 149, 237)  # Cornflower Blue
 
     def reset(self):
-        self.color = (255, 255, 255)  # Reset to white
+        self.color = (200, 200, 200)  # Light Grey
 
-    def make_start(self):
-        self.color = (255, 165, 0)
-
-    def make_closed(self):
-        self.color = (255, 0, 0)
-
-    def make_open(self):
-        self.color = (0, 255, 0)
-
-    def make_barrier(self):
-        self.color = (0, 0, 0)
-
-    def make_end(self):
-        self.color = (128, 0, 128)
-
-    def make_path(self):
-        self.color = (64, 224, 208)  # Turquoise for path
+    def make_start(self): self.color = (255, 215, 0)  # Gold
+    def make_closed(self): self.color = (205, 92, 92)  # Indian Red
+    def make_open(self): self.color = (60, 179, 113)  # Medium Sea Green
+    def make_barrier(self): self.color = (47, 79, 79)  # Dark Slate Gray
+    def make_end(self): self.color = (100, 149, 237)  # Cornflower Blue
+    def make_path(self): self.color = (218, 165, 32)  # Golden Rod
 
     def draw(self, win):
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
 
     def update_neighbors(self, grid):
         self.neighbors = []
-        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].is_barrier():  # DOWN
-            self.neighbors.append(grid[self.row + 1][self.col])
+        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]  # DOWN, UP, RIGHT, LEFT
 
-        if self.row > 0 and not grid[self.row - 1][self.col].is_barrier():  # UP
-            self.neighbors.append(grid[self.row - 1][self.col])
-
-        if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].is_barrier():  # RIGHT
-            self.neighbors.append(grid[self.row][self.col + 1])
-
-        if self.col > 0 and not grid[self.row][self.col - 1].is_barrier():  # LEFT
-            self.neighbors.append(grid[self.row][self.col - 1])
+        for dx, dy in directions:
+            row, col = self.row + dx, self.col + dy
+            if 0 <= row < self.total_rows and 0 <= col < self.total_rows:
+                neighbor = grid[row][col]
+                if not neighbor.is_barrier():
+                    self.neighbors.append(neighbor)
