@@ -3,10 +3,15 @@ import time
 from queue import PriorityQueue
 
 def reconstruct_path(came_from, current, draw):
+    """Reconstructs the path and returns its length."""
+    path_length = 0
     while current in came_from:
         current = came_from[current]
         current.make_path()
         draw()
+        path_length += 1
+    return path_length
+
 
 def dijkstra(draw, grid, start, end):
     start_time = time.time()  # Start the timer
@@ -31,12 +36,14 @@ def dijkstra(draw, grid, start, end):
         nodes_traversed += 1
 
         if current == end:
-            reconstruct_path(came_from, end, draw)
+            path_length = reconstruct_path(came_from, end, draw)
             end.make_end()
-            end_time = time.time()  # Stop the timer
+            end_time = time.time()
             print(f"Time taken: {end_time - start_time:.2f} seconds")
             print(f"Nodes traversed: {nodes_traversed}")
-            return (end_time - start_time, nodes_traversed)
+            print(f"Path length: {path_length}")
+            return (end_time - start_time, nodes_traversed, path_length)
+
 
         for neighbor in current.neighbors:
             temp_g_score = g_score[current] + 1
@@ -60,7 +67,7 @@ def dijkstra(draw, grid, start, end):
     print(f"Time taken: {end_time - start_time:.2f} seconds")
     print(f"Nodes traversed: {nodes_traversed}")
     print("There's no path:(")
-    return (None, None)
+    return (None, None, None)
 
 class Spot:
     def __init__(self, row, col, width, total_rows):
