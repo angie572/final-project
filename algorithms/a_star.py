@@ -1,4 +1,3 @@
-import pygame
 import time
 from heapq import heappush, heappop
 
@@ -9,11 +8,15 @@ def manhattan_distance(point1, point2):
     return abs(x1 - x2) + abs(y1 - y2)
 
 def reconstruct_path(came_from, current, draw):
-    """Reconstructs the path."""
+    """Reconstructs the path and returns its length."""
+    path_length = 0
     while current in came_from:
         current = came_from[current]
         current.make_path()
         draw()
+        path_length += 1
+    return path_length
+
 
 def a_star(draw, grid, start, end):
     start_time = time.time()
@@ -35,12 +38,14 @@ def a_star(draw, grid, start, end):
         open_set_hash.remove(current)
 
         if current == end:
+            path_length = reconstruct_path(came_from, end, draw)
             reconstruct_path(came_from, end, draw)
             end.make_end()
             end_time = time.time()
             print(f"Time taken: {end_time - start_time:.2f} seconds")
             print(f"Nodes traversed: {nodes_traversed}")
-            return (end_time - start_time, nodes_traversed)
+            print(f"Path length: {path_length}")
+            return (end_time - start_time, nodes_traversed, path_length)
 
         for neighbor in current.neighbors:
             temp_g_score = g_score[current] + 1
@@ -62,4 +67,4 @@ def a_star(draw, grid, start, end):
         nodes_traversed += 1
 
     print("There's no path :(")
-    return (None, None)
+    return (None, None, None)
