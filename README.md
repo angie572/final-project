@@ -1,104 +1,35 @@
-# Graph Algorithm Visualizer
+# Path Finding Visualizer 
+This project is a visual representation of various pathfinding algorithms. It is built in Python, utilizing the Pygame library for rendering the visual components. The project includes implementations of A*, Dijkstra's, and Breadth-First Search (BFS) algorithms. The visualization enables users to interactively create start and end points and barriers and observe how different algorithms approach pathfinding.
 
-## Description
+## Algorithms Implemented 
 
-Develop a visualization tool for graph traversal algorithms, focusing on Dijkstra and A* algorithms, utilizing Python and Pygame.
+### 1. A* Algorithm
 
-## Project Structure
+Approach: The A* algorithm searches for the shortest path by combining heuristic-based search with the practicality of Dijkstra's algorithm. The heuristic function used is the Manhattan distance, which estimates the cost of the cheapest path from any node to the goal. A* maintains two scores for each node: the cost to reach the node (g-score) and the estimated cost from the node to the goal (h-score). The f-score, sum of g and h, is minimized to find the shortest path.
 
-- **algorithms**
-  - `dijkstra.py`: Implementation of Dijkstra's algorithm.
-  - `a_star.py`: Implementation of A* algorithm for pathfinding.
-- **components**
-  - `spot.py`: Definition and management of a spot/node in the grid.
-  - `grid.py`: Handling grid functionality, drawings, and updates.
-- **assets**
-  - `demo.mov`: A demonstration video providing an example of expected outcomes.
-- **main.py**: Main script to execute the application.
-- **pyproject.toml**: Configuration file for Poetry, outlining project dependencies.
+Methodology: 
+- Implemented the Manhattan distance heuristic to estimate the cost from any node to the goal.
+- Used a min-heap priority queue to manage the open set of nodes. This ensures that the node with the lowest f-score (g-score + h-score) is always processed next.
+- Maintained a dictionary for each node's g-score (cost from start to node) and f-score (estimated total cost from start to goal through this node).
+- Once the goal is reached, the path is reconstructed backward from the goal to the start using a 'came_from' dictionary.
 
-## Prerequisites
+Visualization: Nodes are color-coded to indicate their state: open set (nodes to be explored), closed set (explored nodes), barriers, start, end, and the final path.
 
-- **Python** (3.x recommended)
-- **Poetry**
-- **Pygame**
+### 2. Dijkstra's Algorithm
+Approach: This algorithm finds the shortest paths between nodes in a graph. It iteratively visits the nearest unvisited node, updates the distances from the start node to its neighbors, and repeats the process until all nodes are visited. Unlike A*, Dijkstra’s algorithm does not use a heuristic. It uses a simple uniform cost search approach, expanding outwards from the start node and updating the shortest path to each node.
 
-To install dependencies, utilize Poetry:
-```bash
-poetry add pygame
-```
+Methodology: 
+-  Implemented using a priority queue to always process the next closest node.
+- Kept track of the distance from the start node to each node using a dictionary. Nodes are updated with the distance if a shorter path is found.
 
-Ensure the virtual environment is active when running the project.
+Visualization: Similar to A*, nodes are colored to represent their status during the search, and the shortest path is highlighted upon completion.
 
-## Requirements
+### 3. BFS 
+Approach: BFS explores all neighbor nodes at the current depth before moving to the next level. It uses a queue to process nodes in the order they are encountered. BFS is particularly effective in this grid scenario for finding the shortest path when the cost to move from one node to another is the same in all directions.
 
-### Core Features
+Methodology:
+- Implemented BFS using a queue to explore nodes level by level. This ensures that nodes are visited in the order they are discovered.
+- For each node, all unvisited neighbors are added to the queue and marked as visited to prevent reprocessing.
+- Similar to A*, a 'came_from' dictionary is used to track the path. Once the end node is found, the path is traced back to the start node.
 
-- Implement and visualize **Dijkstra and A* algorithms** using Pygame.
-- **Path Tracing**: Implement a smooth animation to trace the final path.
-- Allow users to:
-  - Define **start** and **end** nodes.
-  - **Draw barriers** and **clear** them.
-  - **Select** an algorithm to execute.
-  - **Reset** the grid or **clear** the previously found path, while retaining barriers. Ensure that the algorithm can be run again after clearing the path.
-- Ensure the pathfinding algorithm **terminates once the start node finds the end node**.
-
-Please check out the demonstration video for a better understanding of the core features in the assets folder.
-
-### [Optional] Additional Features (For Groups of 2 or 3)
-
-- Implement **one (groups of 2) or two (groups of 3)** additional graph traversal algorithms.
-- Display pathfinding statistics. They must at least include:
-  - Time taken to traverse.
-  - How many nodes were traversed (space complexity).
-  - One or two additional statistics of your choice. The more the merrier. Be creative!
-
-Note these features are a must if you are in a group of 2 or 3. If you are a solo participant, you can implement these features for extra points.
-
-### Bonus: Beat Python’s Built-in (10% Extra Points)
-
-Outperform Python's built-in graph traversal in terms of time complexity using one of your implemented algorithms. Ensure relevant comparisons (e.g., Dijkstra with Dijkstra). Document your results, methodology, and findings in your README.md. It is also important to mention why your implementation is able to outperform (or not) the built-in traversal. Bonus points can carry over to other assignments, such as the midterm. Of course, if you produce very impressive results, you may be rewarded with more than 10% extra points and might consider writing a paper about it. You can be creative with your methodology, but ensure that it is valid and reproducible. Include unit tests and screenshots of your results.
-
-### Note
-
-Feel free to modify the given template code according to your project needs.
-
-## Grading Rubric
-
-1. **Algorithm Implementation and Visualization**: 50% (65% for solo participants)
-   - Effective implementation and visualization of **Dijkstra and A* algorithms**.
-2. **Code Quality and User Interaction**: 15%
-   - Maintain code quality and ensure intuitive user interactions.
-   - Modular code with proper documentation.
-   - If you want more methodology points, please make sure your code is properly organized and documented so that I can understand your methodology. If not properly documented, I will not be able to understand your methodology and will not be able to give you points.
-3. **Testing and Validation**: 20%
-   - Validate the algorithm’s correctness and efficiency through testing.
-4. [Optional] **Pathfinding Statistics**: 5% (for groups only)
-   - Time taken to traverse.
-   - How many nodes were traversed (space complexity).
-   - One or two additional statistics of your choice. The more the merrier. Be creative!
-5. [Optional] **Additional Algorithm(s) Implementation**: 10% (for groups only)
-   - Implement two more graph traversal algorithms at least.
-
-
-## Submission
-
-Ensure to push your final code to your designated repository before the deadline.
-
-Wishing you the best of luck, and happy coding!
-
-## Your README
-
-In your ```README.md```, include:
-- Descriptions of algorithms implemented.
-- Encountered issues or challenges.
-- Instructions on code execution.
-- [If applicable] Methodology and findings from the bonus challenge of beating Python’s built-in algorithms.
-- Any extra information you would like to share with me.
-- **List the names of all group members, or your own name if you are a solo participant.**
-
-### Tutorial
-
-For further guidance on implementing pathfinding algorithms, consider watching the following tutorial: [Coding Train A* Algorithm Tutorial](https://www.youtube.com/watch?v=JtiK0DOeI4A). This resource may provide additional insights or methods for executing pathfinding algorithms in visual formats.
-
-**Note:** Plagiarism of code from this tutorial will result in a grade of 0 for this assignment. Please ensure that you are not copying code from this tutorial, and that you are implementing the algorithms yourself.
+Visualization: BFS visualizes the level-by-level exploration of nodes, progressively marking nodes visited until the end node is reached.
