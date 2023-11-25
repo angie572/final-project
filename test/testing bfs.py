@@ -1,5 +1,6 @@
 from queue import Queue
-
+''' The bfs function implements the breadth-first search algorithm to find a path from the start node to the end node in a given grid. The pygame component has been removed and this focuses mainly on implementing the logic used for the visualization earlier. 
+We use a queue to explore nodes in a breadth-first manner, and dictionaries came_from and visited to track the path and visited nodes.'''
 def bfs(grid, start, end):
     q = Queue()
     q.put(start)
@@ -25,8 +26,8 @@ def bfs(grid, start, end):
 
     return None
 
+'''The test_bfs function defines a simple grid, calls the bfs function to find a path, and checks if the obtained path matches the expected path.'''
 def test_bfs():
-    # Define a simple grid
     grid = {
         (0, 0): [(0, 1), (1, 0)],
         (0, 1): [(0, 0), (1, 1)],

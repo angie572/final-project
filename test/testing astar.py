@@ -1,5 +1,5 @@
 from heapq import heappush, heappop
-
+'''This is a simple implementation of the astar algorithm from which the pycharm component has been removed while the logic of the code has still been maintaned.'''
 def manhattan_distance(point1, point2):
     """Calculate Manhattan distance."""
     x1, y1 = point1
@@ -20,7 +20,6 @@ def a_star(grid, start, end):
         current = heappop(open_set)[2]
 
         if current == end:
-            # Reconstruct the path
             path = []
             while current in came_from:
                 path.append(current)
@@ -41,8 +40,8 @@ def a_star(grid, start, end):
 
     return None
 
+''' The test_a_star function defines a simple 2D grid of tuples, calls the a_star function to find a path, checks if the obtained path matches the expected path, and prints a message accordingly'''
 def test_a_star():
-    # Define a simple 2D grid with correct neighbors
     grid = {
         (0, 0): [(0, 1), (1, 0)],
         (0, 1): [(0, 0), (1, 1)],
@@ -61,6 +60,5 @@ def test_a_star():
 
     print("Test passed: Path matches expected path.")
 
-# Call the test function to perform testing
 test_a_star()
 
