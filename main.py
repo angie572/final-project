@@ -202,12 +202,14 @@ def main(win, width, rows):
 
 def draw_results(win, results):
     if results:
-        time_taken, nodes_visited = results
-        if time_taken is not None and nodes_visited is not None:
+        time_taken, nodes_visited, path_length = results  
+        if time_taken is not None and nodes_visited is not None and path_length is not None:
             font = pygame.font.SysFont(None, 24)
             draw_text(win, f"Time taken: {time_taken:.2f} seconds", (10, WIDTH + 10), font)
             draw_text(win, f"Nodes visited: {nodes_visited}", (10, WIDTH + 35), font)
+            draw_text(win, f"Path length: {path_length}", (10, WIDTH + 60), font)  
         pygame.display.update()
+
 
 
 def draw(win, grid):
