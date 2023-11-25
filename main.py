@@ -173,10 +173,13 @@ def main(win, width, rows):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
                     algorithm = a_star
+                    print("Selected algorithm: A*")
                 elif event.key == pygame.K_d:
                     algorithm = dijkstra
+                    print("Selected algorithm: Dijkstra's")
                 elif event.key == pygame.K_b:
                     algorithm = bfs
+                    print("Selected algorithm: Breadth First Search (BFS)")
                 elif event.key == pygame.K_SPACE and start and end and not started and algorithm:
                     started = True
                     for row in grid.grid:
