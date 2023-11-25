@@ -5,6 +5,19 @@ from algorithms.bfs import bfs
 pygame.init()
 
 class Grid:
+    """
+    - Manages the entire grid where the pathfinding takes place.
+    - Responsible for initializing the grid with spots (nodes), drawing it, and handling user interactions.
+
+    Methods:
+    - __init__: Initializes the grid with given dimensions.
+    - make_grid: Fills the grid with spot objects.
+    - draw: Renders the grid and its spots on the Pygame window.
+    - get_clicked_pos: Translates pixel coordinates to grid coordinates.
+    - reset: Resets the grid to its initial state, with an option to clear barriers.
+    - clear_path: Clears the path after an algorithm has run.
+    - update_neighbors: Updates the neighbors for each spot in the grid based on the current grid state.
+    """
     def __init__(self, rows, width):
         self.rows = rows
         self.width = width
@@ -55,13 +68,26 @@ class Grid:
                 spot.update_neighbors(self.grid)
 
 
+import pygame
+
 class Spot:
+    """
+    - Represents each cell/node in the grid.
+    - Manages the properties of each spot like its position, color, and its neighbors.
+
+    Methods:
+    - __init__: Initializes a spot with its row, column, width, and total rows.
+    - State Check Methods (is_closed, is_open, is_barrier, etc.): Check the current state of the spot.
+    - State Update Methods (make_start, make_closed, make_open, etc.): Update the state of the spot.
+    - draw: Draws the spot on the Pygame window.
+    - update_neighbors: Determines and updates neighboring spots based on grid layout and current state.
+    """
     def __init__(self, row, col, width, total_rows):
         self.row = row
         self.col = col
         self.x = row * width
         self.y = col * width
-        self.color = (255, 255, 255)  # White for empty spot
+        self.color = (255, 255, 255)  
         self.neighbors = []
         self.width = width
         self.total_rows = total_rows
@@ -70,66 +96,64 @@ class Spot:
         return self.row, self.col
 
     def is_closed(self):
-        return self.color == (255, 0, 0)  # Red for closed spot
+        return self.color == (205, 92, 92)  # Indian Red
 
     def is_open(self):
-        return self.color == (0, 255, 0)  # Green for open spot
+        return self.color == (60, 179, 113)  # Medium Sea Green
 
     def is_barrier(self):
-        return self.color == (0, 0, 0)  # Black for barrier
+        return self.color == (47, 79, 79)  # Dark Slate Gray
 
     def is_start(self):
-        return self.color == (255, 165, 0)  # Orange for start spot
+        return self.color == (255, 215, 0)  # Gold
 
     def is_end(self):
-        return self.color == (128, 0, 128)  # Purple for end spot
-    
-    def is_path(self):
-        return self.color == (64, 224, 208)  # Turquoise for path
+        return self.color == (100, 149, 237)  # Cornflower Blue
 
     def reset(self):
-        self.color = (255, 255, 255)  # Reset to white
+        self.color = (200, 200, 200)  # Light Grey
 
-    def make_start(self):
-        self.color = (255, 165, 0)
-
-    def make_closed(self):
-        self.color = (255, 0, 0)
-
-    def make_open(self):
-        self.color = (0, 255, 0)
-
-    def make_barrier(self):
-        self.color = (0, 0, 0)
-
-    def make_end(self):
-        self.color = (128, 0, 128)
-
-    def make_path(self):
-        self.color = (64, 224, 208)  # Turquoise for path
+    def make_start(self): self.color = (255, 215, 0)  # Gold
+    def make_closed(self): self.color = (205, 92, 92)  # Indian Red
+    def make_open(self): self.color = (60, 179, 113)  # Medium Sea Green
+    def make_barrier(self): self.color = (47, 79, 79)  # Dark Slate Gray
+    def make_end(self): self.color = (100, 149, 237)  # Cornflower Blue
+    def make_path(self): self.color = (218, 165, 32)  # Golden Rod
 
     def draw(self, win):
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
 
     def update_neighbors(self, grid):
         self.neighbors = []
-        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].is_barrier():  # DOWN
-            self.neighbors.append(grid[self.row + 1][self.col])
+        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]  # DOWN, UP, RIGHT, LEFT
 
-        if self.row > 0 and not grid[self.row - 1][self.col].is_barrier():  # UP
-            self.neighbors.append(grid[self.row - 1][self.col])
+        for dx, dy in directions:
+            row, col = self.row + dx, self.col + dy
+            if 0 <= row < self.total_rows and 0 <= col < self.total_rows:
+                neighbor = grid[row][col]
+                if not neighbor.is_barrier():
+                    self.neighbors.append(neighbor)
 
-        if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].is_barrier():  # RIGHT
-            self.neighbors.append(grid[self.row][self.col + 1])
-
-        if self.col > 0 and not grid[self.row][self.col - 1].is_barrier():  # LEFT
-            self.neighbors.append(grid[self.row][self.col - 1])
 
 def draw_text(win, text, position, font, color=(0, 0, 0)):
+    """
+    - Utility function for rendering text on the Pygame window.
+    - Takes in the window object, text, position, font, and color for the text.
+    """
     text_surface = font.render(text, True, color)
     win.blit(text_surface, position)
 
 def main(win, width, rows):
+    """
+    - The central function of the application where the Pygame loop is managed.
+    - Handles user interactions, algorithm selection, and execution of pathfinding algorithms.
+
+    Process:
+    - Initializes the grid and manages user inputs for setting start, end, and barriers.
+    - Listens for key presses to select and execute the chosen algorithm.
+    - Displays the results of the algorithm once executed.
+    - Handles application events like quitting, resetting, and clearing the path.
+    """
     grid = Grid(rows, width)
     start = None
     end = None
@@ -204,6 +228,10 @@ def main(win, width, rows):
     pygame.quit()
 
 def draw_results(win, results):
+    """
+    - Displays the pathfinding results on the Pygame window.
+    - Shows pathfinding statistic like time taken, nodes visited, and path length.
+    """
     if results:
         time_taken, nodes_visited, path_length = results  
         if time_taken is not None and nodes_visited is not None and path_length is not None:
@@ -216,6 +244,10 @@ def draw_results(win, results):
 
 
 def draw(win, grid):
+    """
+    - Responsible for updating the Pygame window with the current state of the grid.
+    - Calls the draw method of the grid object to render its current state.
+    """
     win.fill((255, 255, 255))
     grid.draw(win)
     pygame.display.update()
