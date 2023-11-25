@@ -20,12 +20,14 @@ def bfs(draw, grid, start, end):
         current = q.get()
 
         if current == end:
-            reconstruct_path(came_from, end, draw)
+            path_length = reconstruct_path(came_from, end, draw)
             end.make_end()
-            end_time = time.time()  # End timer
+            end_time = time.time()
             print(f"Time taken: {end_time - start_time:.2f} seconds")
             print(f"Nodes traversed: {nodes_traversed}")
-            return (end_time - start_time, nodes_traversed)
+            print(f"Path length: {path_length}")
+            return (end_time - start_time, nodes_traversed, path_length)
+
 
         for neighbor in current.neighbors:
             if neighbor not in visited:
@@ -44,11 +46,15 @@ def bfs(draw, grid, start, end):
     print(f"Time taken: {end_time - start_time:.2f} seconds")
     print(f"Nodes traversed: {nodes_traversed}")
     print("There's no path :(")
-    return (None, None)
+    return (None, None, None)
 
 
 def reconstruct_path(came_from, current, draw):
+    """Reconstructs the path and returns its length."""
+    path_length = 0
     while current in came_from:
         current = came_from[current]
         current.make_path()
         draw()
+        path_length += 1
+    return path_length
